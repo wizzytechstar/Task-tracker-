@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Praject tracker</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+        }
+        .array-display {
+            background: #f5f5f5;
+            padding: 10px;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        function TaskChart() {
+            // initial data - probably should move this somewhere else later
+            const [weeks, setWeeks] = useState(["Week 1", "Week 2", "Week 3", "Week 4"]);
+            const [tasks, setTasks] = useState([5, 8, 6, 10]);
+            const chartRef = useRef(null);
+            const myChart = useRef(null);
+
+            useEffect(() => {
+                const ctx = chartRef.current.getContext('2d');
+                
+                if (myChart.current) {
+                    myChart.current.destroy(); // clean up old chart
+                }
+
+                // create new chart
+                myChart.current = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: weeks,
+                        datasets: [{
+                            label: 'Tasks Completed',
+                            data: tasks,
+                            backgroundColor: 'rgba(66, 153, 225, 0.2)',
+                            borderColor: 'rgba(66, 153, 225, 1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // cleanup function
+                return () => {
+                    if (myChart.current) {
+                        myChart.current.destroy();
+                    }
+                };
+            }, [weeks, tasks]);
+
+            const addRandomWeek = () => {
+                const weekNum = weeks.length + 1;
+                const randomTasks = Math.floor(Math.random() * 10) + 3; // between 3-12 tasks
+                
+                setWeeks([...weeks, `Week ${weekNum}`]);
+                setTasks([...tasks, randomTasks]);
+            };
+
+            const resetToDefault = () => {
+                // back to original state
+                setWeeks(["Week 1", "Week 2", "Week 3", "Week 4"]);
+                setTasks([5, 8, 6, 10]);
+            };
+
+            return (
+                <div>
+                    <h1>Project Tasks Per Week</h1>
+                    
+                    <div className="chart-container">
+                        <canvas ref={chartRef}></canvas>
+                    </div>
+
+                    <div>
+                        <button onClick={addRandomWeek}>Add Random Week</button>
+                        <button onClick={resetToDefault}>Reset Data</button>
+                    </div>
+
+                    <div style={{marginTop: '20px'}}>
+                        <h3>Current Arrays:</h3>
+                        <div>
+                            <strong>Weeks:</strong>
+                            <div className="array-display">
+                                const weeks = [{weeks.map(w => `"${w}"`).join(', ')}];
+                            </div>
+                        </div>
+                        <div>
+                            <strong>Tasks:</strong>
+                            <div className="array-display">
+                                const tasks = [{tasks.join(', ')}];
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // render the component
+        ReactDOM.render(<TaskChart />, document.getElementById('root'));
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9743acd621f47034',t:'MTc1NjA0NzE2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
